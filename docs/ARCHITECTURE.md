@@ -8,7 +8,7 @@
 
 | Katman | Teknoloji | Sebep |
 |---|---|---|
-| Framework | Next.js 14 (App Router) | Monolith, free tier optimum |
+| Framework | Next.js 14.2.x (App Router) — pinned for stability | Monolith, free tier optimum |
 | Dil | TypeScript strict | Type safety |
 | Auth | NextAuth.js v5 | Google + GitHub provider |
 | DB | Neon PostgreSQL | Free tier 0.5GB |
