@@ -17,6 +17,7 @@
     "@ai-sdk/groq": "^3.0.39",
     "@auth/prisma-adapter": "^2.11.2",
     "@neondatabase/serverless": "^1.1.0",
+    "@octokit/rest": "^22.0.1",
     "@prisma/adapter-neon": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@radix-ui/react-avatar": "^1.1.11",
