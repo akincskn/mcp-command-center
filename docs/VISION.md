@@ -24,7 +24,7 @@ Göstermek istediklerimiz:
 
 **Yapıyoruz:**
 - MCP-shaped tool orchestration engine
-- Multi-tool chaining (3 farklı backend: GitHub, Brave Search, Memory)
+- Multi-tool chaining (3 farklı backend: GitHub, Tavily, Memory)
 - Multi-agent routing (Speed / Balanced / Quality)
 - Plan-then-execute UX
 - Live execution visualization
@@ -74,14 +74,14 @@ Pitch: "MCP-compatible orchestration architecture"
 ### Senaryo A — Developer Workflow
 **Komut:** "akincskn/rivalradar son 5 issue'sunu listele, web'de benzer açık-kaynak projeleri ara, karşılaştırma yap"
 
-**Tool zinciri:** GitHub → Brave Search → GitHub × 3 → LLM (Quality) → Memory
+**Tool zinciri:** GitHub → Tavily → GitHub × 3 → LLM (Quality) → Memory
 
 **~25s, ~12K token**
 
 ### Senaryo B — Research Workflow
 **Komut:** "MCP protokolü hakkında 5 makale bul, key insights çıkar, knowledge base'e kaydet"
 
-**Tool zinciri:** Brave Search → LLM (Balanced) → Brave Search × 5 → LLM (Quality) → Memory
+**Tool zinciri:** Tavily search → LLM (Balanced) → tavily.web_fetch × 5 → LLM (Quality) → Memory
 
 **~20s, ~8K token**
 
@@ -154,5 +154,5 @@ Dashboard'da **"Example Commands"** kartları olur.
 - Groq free: 30 RPM, 14.4K RPD
 - Gemini free: 5-15 RPM, 100-1500 RPD
 - Neon free: 0.5GB
-- Brave Search free: 2K query/ay
+- Tavily free: 1000 query/ay
 - Demo trafiği: 5-50 req/gün

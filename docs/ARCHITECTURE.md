@@ -18,7 +18,7 @@
 | AI: Balanced | Gemini 2.5 Flash | Orta seviye reasoning |
 | AI: Quality | Groq Llama 3.3 70B Versatile | Kompleks synthesis |
 | GitHub | @octokit/rest | Direct API |
-| Brave Search | fetch + Brave Search API | Direct API |
+| Tavily | fetch + Tavily REST API | Direct API |
 | Memory | Prisma + Postgres | Direct DB |
 | UI | shadcn/ui + Tailwind | Compose-able |
 | Animation | Framer Motion | Polished motion |
@@ -53,7 +53,7 @@
      │              │  │          │    │                 │
      │ users        │  │ Groq     │    │ GitHub API      │
      │ plans        │  │ Gemini   │    │  (Octokit)      │
-     │ steps        │  │          │    │ Brave Search    │
+     │ steps        │  │          │    │ Tavily          │
      │ memories     │  │          │    │  (REST)         │
      │ usage_logs   │  │          │    │ Memory          │
      │              │  │          │    │  (Postgres)     │
@@ -98,8 +98,8 @@ export const toolRegistry: Record<string, MCPTool> = {
   'github.search_code': githubSearchCode,
   'github.get_file_content': githubGetFile,
   
-  'brave-search.web_search': braveWebSearch,
-  'brave-search.web_fetch': braveWebFetch,
+  'tavily.web_search': tavilyWebSearch,
+  'tavily.web_fetch': tavilyWebFetch,
   
   'memory.recall': memoryRecall,
   'memory.store': memoryStore,
@@ -349,7 +349,7 @@ lib/
 │   ├── registry.ts
 │   ├── types.ts
 │   ├── github/
-│   ├── braveSearch/
+│   ├── tavily/
 │   └── memory/
 ├── prompts/
 │   ├── planGeneration.ts
@@ -396,7 +396,7 @@ GITHUB_CLIENT_ID
 GITHUB_CLIENT_SECRET
 GROQ_API_KEY
 GEMINI_API_KEY
-BRAVE_API_KEY
+TAVILY_API_KEY
 GITHUB_DEMO_TOKEN
 ENCRYPTION_KEY
 INTERNAL_SECRET

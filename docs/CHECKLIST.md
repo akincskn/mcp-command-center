@@ -100,8 +100,8 @@ Bu döküman adım adım build sırasıdır. Her phase tamamlanmadan bir sonraki
 - [ ] GitHub tools: `lib/tools/github/` (Octokit-based)
   - [ ] `npm i @octokit/rest`
   - [ ] list_issues, get_repo, search_code, get_file_content
-- [ ] Brave Search tools: `lib/tools/braveSearch/`
-  - [ ] Brave API key env
+- [ ] Tavily tools: `lib/tools/tavily/`
+  - [ ] TAVILY_API_KEY env
   - [ ] web_search, web_fetch
 - [ ] Memory tools: `lib/tools/memory/`
   - [ ] Prisma-based, user-isolated namespace
@@ -112,7 +112,7 @@ Bu döküman adım adım build sırasıdır. Her phase tamamlanmadan bir sonraki
 
 **Test:**
 - GitHub → `list_issues` `akincskn/rivalradar` → real data
-- Brave Search → "test query" → results
+- Tavily → "test query" → results
 - Memory → store + recall round-trip
 
 **Commit:** `feat: mcp-shaped tool abstraction layer`

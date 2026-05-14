@@ -279,6 +279,7 @@ model McpResourceCache {
   
   createdAt DateTime @default(now())
   
+  // mcpServer values: "github", "tavily", "memory"
   @@unique([userId, mcpServer, uri])
   @@index([userId, mcpServer])
   @@index([expiresAt])
