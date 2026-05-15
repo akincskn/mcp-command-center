@@ -84,20 +84,20 @@ CRITICAL:
 ### Few-Shot Example 1 — Developer Workflow
 
 ```
-USER: "akincskn/rivalradar son 5 issue'sunu listele, web'de benzer açık-kaynak projeleri ara, karşılaştırma yap"
+USER: "akincskn/mcp-command-center son 5 issue'sunu listele, web'de benzer açık-kaynak projeleri ara, karşılaştırma yap"
 
 OUTPUT:
 {
-  "description": "Fetch issues from rivalradar, find similar projects via web search, compare findings",
+  "description": "Fetch issues from mcp-command-center, find similar projects via web search, compare findings",
   "estimatedDuration": 25,
   "steps": [
     {
       "order": 1,
-      "title": "Fetch RivalRadar issues",
-      "description": "Get the latest 5 open issues from akincskn/rivalradar",
+      "title": "Fetch MCP Command Center issues",
+      "description": "Get the latest 5 open issues from akincskn/mcp-command-center",
       "type": "TOOL_CALL",
       "toolName": "github.list_issues",
-      "toolInput": { "owner": "akincskn", "repo": "rivalradar", "state": "open", "perPage": 5 }
+      "toolInput": { "owner": "akincskn", "repo": "mcp-command-center", "state": "open", "perPage": 5 }
     },
     {
       "order": 2,
@@ -137,7 +137,7 @@ OUTPUT:
       "description": "Store the comparison for future reference",
       "type": "TOOL_CALL",
       "toolName": "memory.store",
-      "toolInput": { "key": "rivalradar-comparison-{date}", "tags": ["comparison", "github", "rivalradar"] }
+      "toolInput": { "key": "mcp-command-center-roadmap-{date}", "tags": ["roadmap", "mcp-command-center"] }
     }
   ]
 }
@@ -146,28 +146,28 @@ OUTPUT:
 ### Few-Shot Example 2 — Knowledge Workflow
 
 ```
-USER: "Geçen seferki RivalRadar comparison'ını hatırla, GitHub'daki güncellemelerle karşılaştır"
+USER: "Geçen seferki mcp-command-center roadmap analysis'ini hatırla, GitHub'daki güncellemelerle karşılaştır"
 
 OUTPUT:
 {
-  "description": "Recall previous comparison, diff against current state",
+  "description": "Recall previous roadmap analysis, diff against current state",
   "estimatedDuration": 15,
   "steps": [
     {
       "order": 1,
-      "title": "Recall previous comparison",
-      "description": "Find the most recent rivalradar-comparison memory",
+      "title": "Recall previous roadmap analysis",
+      "description": "Find the most recent mcp-command-center-roadmap memory",
       "type": "TOOL_CALL",
       "toolName": "memory.recall",
-      "toolInput": { "tags": ["comparison", "rivalradar"], "limit": 1 }
+      "toolInput": { "tags": ["roadmap", "mcp-command-center"], "limit": 1 }
     },
     {
       "order": 2,
-      "title": "Fetch current RivalRadar state",
+      "title": "Fetch current mcp-command-center state",
       "description": "Get current issues and recent activity",
       "type": "TOOL_CALL",
       "toolName": "github.list_issues",
-      "toolInput": { "owner": "akincskn", "repo": "rivalradar", "state": "all", "perPage": 10 }
+      "toolInput": { "owner": "akincskn", "repo": "mcp-command-center", "state": "all", "perPage": 10 }
     },
     {
       "order": 3,
@@ -183,7 +183,7 @@ OUTPUT:
       "description": "Store updated comparison",
       "type": "TOOL_CALL",
       "toolName": "memory.store",
-      "toolInput": { "key": "rivalradar-comparison-update-{date}", "tags": ["comparison", "github", "rivalradar", "update"] }
+      "toolInput": { "key": "mcp-command-center-roadmap-update-{date}", "tags": ["roadmap", "mcp-command-center", "update"] }
     }
   ]
 }

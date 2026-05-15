@@ -72,7 +72,7 @@ Pitch: "MCP-compatible orchestration architecture"
 ## 6. Üç Demo Senaryosu
 
 ### Senaryo A — Developer Workflow
-**Komut:** "akincskn/rivalradar son 5 issue'sunu listele, web'de benzer açık-kaynak projeleri ara, karşılaştırma yap"
+**Komut:** "akincskn/mcp-command-center son 5 issue'sunu listele, web'de benzer açık-kaynak projeleri ara, karşılaştırma yap"
 
 **Tool zinciri:** GitHub → Tavily → GitHub × 3 → LLM (Quality) → Memory
 
@@ -86,7 +86,7 @@ Pitch: "MCP-compatible orchestration architecture"
 **~20s, ~8K token**
 
 ### Senaryo C — Knowledge Workflow (seeded)
-**Komut:** "Geçen seferki RivalRadar comparison'ını hatırla, GitHub'daki güncellemelerle karşılaştır"
+**Komut:** "Geçen seferki mcp-command-center roadmap analysis'ini hatırla, GitHub'daki güncellemelerle karşılaştır"
 
 **Tool zinciri:** Memory (seeded) → GitHub → LLM (Quality) → Memory update
 
@@ -122,7 +122,7 @@ Dashboard'da **"Example Commands"** kartları olur.
 | Failure handling | Stop on first + retry button | Karmaşık fallback gereksiz |
 | Memory scope | User-isolated, persistent | Her user kendi context'i |
 | GitHub OAuth reuse | Login token = MCP auth | Smooth UX, scope: read:user, public_repo |
-| Demo data | akincskn/rivalradar gerçek repo | Authentic |
+| Demo data | akincskn/mcp-command-center kendi reposu (inception narrative) | Authentic |
 | Plan caching | Yok | Öğretici demo değeri |
 | Senaryo C seed | Auto-seeded user kayıtta | Sıralı demo gereksiz |
 | Rate limit fallback | Basit retry-with-backoff | Faz 1 için yeterli |

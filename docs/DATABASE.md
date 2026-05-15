@@ -304,18 +304,18 @@ events: {
       data: {
         userId: user.id,
         namespace: 'default',
-        key: 'rivalradar-comparison-seed',
+        key: 'mcp-command-center-roadmap-seed',
         value: {
-          summary: "Previous comparison of akincskn/rivalradar with similar AI competitor analysis tools",
-          repos: ["competitor-1", "competitor-2", "competitor-3"],
+          summary: "Previous analysis of mcp-command-center roadmap and open issues",
+          repos: ["competitor-orchestrator-1", "competitor-orchestrator-2"],
           keyFindings: [
-            "RivalRadar has stronger N8N integration",
-            "Competitor-1 has better OAuth flow",
-            "Competitor-2 lacks PostgreSQL support"
+            "MCP Command Center has stronger plan-then-execute UX",
+            "Competitor-1 lacks multi-agent routing",
+            "Competitor-2 doesn't expose cost transparency"
           ],
           timestamp: "2026-05-01T10:00:00Z"
         },
-        tags: ["comparison", "github", "rivalradar", "demo-seed"],
+        tags: ["roadmap", "mcp-command-center", "demo-seed"],
         source: "seed"
       }
     });
