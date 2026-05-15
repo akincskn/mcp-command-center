@@ -1,0 +1,255 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============ Auth (NextAuth) ============
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+
+  githubToken     String?
+  githubUsername  String?
+  agentPreference String  @default("auto")
+
+  accounts      Account[]
+  sessions      Session[]
+  plans         Plan[]
+  memories      Memory[]
+  usageLogs     UsageLog[]
+  apiKeys       UserApiKey[]
+  resourceCache McpResourceCache[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============ Core Domain ============
+
+model Plan {
+  id     String @id @default(cuid())
+  userId String
+
+  command     String @db.Text
+  description String? @db.Text
+
+  status    PlanStatus @default(PENDING_APPROVAL)
+  agentMode String     @default("auto")
+
+  totalTokens  Int     @default(0)
+  totalCostUsd Decimal @default(0) @db.Decimal(10, 6)
+
+  estimatedDuration Int?
+  actualDuration    Int?
+
+  startedAt    DateTime?
+  completedAt  DateTime?
+  failedAt     DateTime?
+  errorMessage String?   @db.Text
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  steps     Step[]
+  usageLogs UsageLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+enum PlanStatus {
+  PENDING_APPROVAL
+  EXECUTING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model Step {
+  id     String @id @default(cuid())
+  planId String
+
+  order       Int
+  title       String
+  description String @db.Text
+
+  type StepType
+
+  toolName  String?
+  toolInput Json?
+
+  agentTier  String?
+  promptHint String?
+
+  output Json?
+
+  status StepStatus @default(PENDING)
+
+  inputTokens  Int     @default(0)
+  outputTokens Int     @default(0)
+  costUsd      Decimal @default(0) @db.Decimal(10, 6)
+
+  startedAt   DateTime?
+  completedAt DateTime?
+  duration    Int?
+
+  errorMessage String? @db.Text
+  retryCount   Int     @default(0)
+
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, order])
+  @@index([planId])
+  @@index([status])
+}
+
+enum StepType {
+  TOOL_CALL
+  LLM_STEP
+}
+
+enum StepStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  SKIPPED
+}
+
+model Memory {
+  id     String @id @default(cuid())
+  userId String
+
+  namespace String   @default("default")
+  key       String
+  value     Json
+
+  tags   String[]
+  source String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, namespace, key])
+  @@index([userId, namespace])
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model UsageLog {
+  id     String  @id @default(cuid())
+  userId String
+  planId String?
+
+  provider  String
+  model     String?
+  operation String
+
+  inputTokens  Int     @default(0)
+  outputTokens Int     @default(0)
+  costUsd      Decimal @default(0) @db.Decimal(10, 6)
+
+  durationMs   Int?
+  success      Boolean @default(true)
+  errorMessage String? @db.Text
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([planId])
+}
+
+model UserApiKey {
+  id     String @id @default(cuid())
+  userId String
+
+  provider     String
+  keyEncrypted String  @db.Text
+  keyHint      String
+
+  isActive   Boolean   @default(true)
+  lastUsedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, provider])
+  @@index([userId])
+}
+
+model McpResourceCache {
+  id     String @id @default(cuid())
+  userId String
+
+  mcpServer String
+  uri       String
+  name      String
+  type      String
+  metadata  Json?
+
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, mcpServer, uri])
+  @@index([userId, mcpServer])
+  @@index([expiresAt])
+}

@@ -30,9 +30,14 @@ yarn-error.log*
 .env.local
 !.env.example
 
+# prisma env (never commit real credentials)
+.env
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/app/generated/prisma
