@@ -14,10 +14,10 @@ AVAILABLE TOOLS (MCP-shaped):
 4. github.get_file_content - Get a specific file's content
    Input: { owner, repo, path }
 
-5. brave-search.web_search - Search the web
+5. tavily.web_search - Search the web
    Input: { query, count? }
 
-6. brave-search.web_fetch - Fetch a specific URL
+6. tavily.web_fetch - Fetch a specific URL
    Input: { url }
 
 7. memory.recall - Retrieve from user's memory
@@ -75,7 +75,7 @@ OUTPUT:
       "title": "Search for similar projects",
       "description": "Find open-source AI competitor analysis tools",
       "type": "TOOL_CALL",
-      "toolName": "brave-search.web_search",
+      "toolName": "tavily.web_search",
       "toolInput": { "query": "open source AI competitor analysis tool github", "count": 10 }
     },
     {
@@ -172,7 +172,7 @@ export function buildPlanUserPrompt(params: {
 USER CONTEXT:
 - GitHub username: ${params.githubUsername ?? 'not connected'}
 - Available memories (recent): ${memoriesList}
-- Connected tools: github, brave-search, memory
+- Connected tools: github, tavily, memory
 
 Generate an execution plan as JSON.`;
 }
