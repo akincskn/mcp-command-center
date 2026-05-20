@@ -14,9 +14,9 @@
 | DB | Neon PostgreSQL | Free tier 0.5GB |
 | ORM | Prisma 5+ | Schema-first |
 | AI SDK | Vercel AI SDK | Multi-provider abstraction |
-| AI: Speed | Groq Llama 3.1 8B Instant | Hızlı planning |
-| AI: Balanced | Gemini 2.5 Flash | Orta seviye reasoning |
-| AI: Quality | Groq Llama 3.3 70B Versatile | Kompleks synthesis |
+| AI: Speed | Groq gpt-oss-20b | Hızlı planning |
+| AI: Balanced | Groq gpt-oss-20b (Gemini Faz 2'ye ertelendi — project access issue) | Orta seviye reasoning |
+| AI: Quality | Groq gpt-oss-120b | Kompleks synthesis |
 | GitHub | @octokit/rest | Direct API |
 | Tavily | fetch + Tavily REST API | Direct API |
 | Memory | Prisma + Postgres | Direct DB |
@@ -52,7 +52,7 @@
      │ Neon Postgres│  │ AI APIs  │    │ Tool Backends   │
      │              │  │          │    │                 │
      │ users        │  │ Groq     │    │ GitHub API      │
-     │ plans        │  │ Gemini   │    │  (Octokit)      │
+     │ plans        │  │          │    │  (Octokit)      │
      │ steps        │  │          │    │ Tavily          │
      │ memories     │  │          │    │  (REST)         │
      │ usage_logs   │  │          │    │ Memory          │
@@ -227,9 +227,9 @@ PENDING → RUNNING → COMPLETED
 
 | Tier | Model | Use Case |
 |---|---|---|
-| Speed | Groq Llama 3.1 8B Instant | Plan generation, simple synthesis |
-| Balanced | Gemini 2.5 Flash | Filtering, extraction |
-| Quality | Groq Llama 3.3 70B Versatile | Comparison, deep analysis |
+| Speed | Groq gpt-oss-20b | Plan generation, simple synthesis |
+| Balanced | Groq gpt-oss-20b (Gemini Faz 2'ye ertelendi) | Filtering, extraction |
+| Quality | Groq gpt-oss-120b | Comparison, deep analysis |
 
 ### Auto Mode Logic
 
@@ -395,7 +395,7 @@ GOOGLE_CLIENT_SECRET
 GITHUB_CLIENT_ID
 GITHUB_CLIENT_SECRET
 GROQ_API_KEY
-GEMINI_API_KEY
+# GOOGLE_GENERATIVE_AI_API_KEY (Phase 2 — Gemini project access issue)
 TAVILY_API_KEY
 GITHUB_DEMO_TOKEN
 ENCRYPTION_KEY

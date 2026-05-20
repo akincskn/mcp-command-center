@@ -151,8 +151,7 @@ Dashboard'da **"Example Commands"** kartları olur.
 ## 11. Kısıtlar
 
 - Vercel Hobby: 10s timeout → background job zorunlu
-- Groq free: 30 RPM, 14.4K RPD
-- Gemini free: 5-15 RPM, 100-1500 RPD
+- Groq free: 30 RPM, 14.4K RPD (tüm 3 tier — Gemini Faz 2'ye ertelendi, project access issue)
 - Neon free: 0.5GB
 - Tavily free: 1000 query/ay
 - Demo trafiği: 5-50 req/gün

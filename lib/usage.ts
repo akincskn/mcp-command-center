@@ -17,7 +17,7 @@ export interface LogUsageParams {
 const PRICING: Record<string, { input: number; output: number }> = {
   'groq:openai/gpt-oss-20b': { input: 0.10, output: 0.50 },
   'groq:openai/gpt-oss-120b': { input: 0.15, output: 0.75 },
-  'google:gemini-2.5-flash': { input: 0.075, output: 0.30 },
+  // 'google:gemini-2.5-flash': { input: 0.075, output: 0.30 }, // Phase 2 — Gemini balanced tier
 };
 
 function calculateCost(

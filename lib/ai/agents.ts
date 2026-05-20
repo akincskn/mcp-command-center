@@ -1,9 +1,9 @@
 import { groq } from '@ai-sdk/groq';
-import { google } from '@ai-sdk/google';
+// import { google } from '@ai-sdk/google'; // Phase 2 — Gemini balanced tier (project access issue)
 
 export const agents = {
   speed: groq('openai/gpt-oss-20b'),
-  balanced: google('gemini-2.5-flash'),
+  balanced: groq('openai/gpt-oss-20b'),
   quality: groq('openai/gpt-oss-120b'),
 } as const;
 
@@ -11,7 +11,7 @@ export type AgentTier = keyof typeof agents;
 
 export const agentMetadata: Record<
   AgentTier,
-  { name: string; description: string; provider: 'groq' | 'google'; model: string }
+  { name: string; description: string; provider: 'groq'; model: string }
 > = {
   speed: {
     name: 'Speed',
@@ -22,8 +22,8 @@ export const agentMetadata: Record<
   balanced: {
     name: 'Balanced',
     description: 'Middle tier, for moderate reasoning',
-    provider: 'google',
-    model: 'gemini-2.5-flash',
+    provider: 'groq',
+    model: 'openai/gpt-oss-20b',
   },
   quality: {
     name: 'Quality',
