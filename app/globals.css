@@ -73,6 +73,29 @@
   }
 }
 
+/* ─── React Flow graph ─── */
+:root {
+  --edge-default: hsl(240 4% 30%);
+  --edge-active: hsl(160 84% 39%);
+  --graph-grid: hsl(240 6% 15%);
+}
+
+.react-flow__attribution {
+  opacity: 0.3;
+  font-size: 9px;
+  background: transparent;
+}
+
+.react-flow__controls button {
+  background: hsl(240 6% 10%);
+  border-color: hsl(240 4% 20%);
+  color: hsl(0 0% 80%);
+}
+
+.react-flow__controls button:hover {
+  background: hsl(240 6% 15%);
+}
+
 /* ─── Scrollbar (WebKit) ─── */
 ::-webkit-scrollbar {
   width: 6px;
