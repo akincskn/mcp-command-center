@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { CostBadge } from '@/components/dashboard/CostBadge';
+import { CommandPalette } from '@/components/command/CommandPalette';
 
 export default async function DashboardLayout({
   children,
@@ -22,6 +23,7 @@ export default async function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar user={user} />
+      <CommandPalette />
 
       <div className="flex flex-1 flex-col pl-60">
         {/* Top bar */}
