@@ -6,6 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import { CommandInput } from '@/components/plan/CommandInput';
 import { PlanView } from '@/components/plan/PlanView';
 import { ExampleCommands } from '@/components/dashboard/ExampleCommands';
+import { useActivePlan } from '@/lib/activePlanContext';
 
 const CONNECTED_SERVERS = [
   { label: 'GitHub', color: 'bg-primary/10 text-primary border-primary/20' },
@@ -25,7 +26,7 @@ interface DashboardContentProps {
 
 export function DashboardContent({ firstName }: DashboardContentProps) {
   const [command, setCommand] = useState('');
-  const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const { activePlanId, setActivePlanId } = useActivePlan();
   const searchParams = useSearchParams();
   const router = useRouter();
 

@@ -2,6 +2,7 @@
 
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { motion } from 'framer-motion';
+import { spring } from '@/lib/motion';
 import {
   GitBranch,
   Search,
@@ -97,6 +98,7 @@ export function StepNode({ data }: NodeProps & { data: StepNodeData }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
+      transition={spring}
       className={cn(
         'w-64 rounded-lg border-2 p-3 transition-colors duration-300',
         config.border,

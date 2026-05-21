@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { springSoft, easeOut, easeOutFast } from '@/lib/motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -125,7 +126,7 @@ export function PlanView({ planId, onCleared }: PlanViewProps) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.25 }}
+      transition={springSoft}
       className="space-y-6"
     >
       {/* Plan header */}
@@ -138,7 +139,7 @@ export function PlanView({ planId, onCleared }: PlanViewProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.15 }}
+              transition={easeOutFast}
             >
               <Badge
                 variant="outline"
@@ -258,7 +259,7 @@ export function PlanView({ planId, onCleared }: PlanViewProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ delay: plan.steps.length * 0.05 + 0.1 }}
+            transition={{ ...easeOut, delay: Math.min(plan.steps.length * 0.05, 0.2) + 0.1 }}
             className="flex items-center gap-3 pt-2"
           >
             <Button

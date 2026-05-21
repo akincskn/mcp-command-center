@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { CostBadge } from '@/components/dashboard/CostBadge';
 import { CommandPalette } from '@/components/command/CommandPalette';
+import { ActivePlanProvider } from '@/lib/activePlanContext';
 
 export default async function DashboardLayout({
   children,
@@ -21,19 +22,21 @@ export default async function DashboardLayout({
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar user={user} />
-      <CommandPalette />
+    <ActivePlanProvider>
+      <div className="flex min-h-screen bg-background">
+        <Sidebar user={user} />
+        <CommandPalette />
 
-      <div className="flex flex-1 flex-col pl-60">
-        {/* Top bar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-end border-b border-border bg-background/80 px-6 backdrop-blur-sm">
-          <CostBadge />
-        </header>
+        <div className="flex flex-1 flex-col pl-60">
+          {/* Top bar */}
+          <header className="sticky top-0 z-30 flex h-14 items-center justify-end border-b border-border bg-background/80 px-6 backdrop-blur-sm">
+            <CostBadge />
+          </header>
 
-        {/* Page content */}
-        <main className="flex-1 p-6">{children}</main>
+          {/* Page content */}
+          <main className="flex-1 p-6">{children}</main>
+        </div>
       </div>
-    </div>
+    </ActivePlanProvider>
   );
 }

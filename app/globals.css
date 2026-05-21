@@ -57,6 +57,9 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
   ::selection {
     background-color: hsl(160 64% 52% / 0.3);
   }

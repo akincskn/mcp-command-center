@@ -1,11 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { useCreatePlan } from './usePlanQueries';
 import { motion } from 'framer-motion';
+import { easeOut } from '@/lib/motion';
 
 interface CommandInputProps {
   command: string;
@@ -19,6 +21,11 @@ export function CommandInput({
   onPlanCreated,
 }: CommandInputProps) {
   const createPlan = useCreatePlan();
+  const [isMac, setIsMac] = useState(true);
+
+  useEffect(() => {
+    setIsMac(navigator.platform.toUpperCase().includes('MAC'));
+  }, []);
 
   const handleSubmit = async () => {
     if (command.trim().length < 3) {
@@ -47,13 +54,17 @@ export function CommandInput({
 
   return (
     <div className="space-y-1.5">
+      <label htmlFor="command-input" className="sr-only">
+        Enter your command
+      </label>
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={easeOut}
         className="relative"
       >
         <Input
+          id="command-input"
           value={command}
           onChange={(e) => onCommandChange(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -83,7 +94,7 @@ export function CommandInput({
       <p className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
         Press{' '}
         <kbd className="inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-          <span className="text-xs">⌘</span>K
+          <span className="text-xs">{isMac ? '⌘' : 'Ctrl'}</span>K
         </kbd>
         {' '}for quick commands
       </p>
