@@ -32,11 +32,10 @@ export function DashboardContent({ firstName }: DashboardContentProps) {
   useEffect(() => {
     const cmd = searchParams.get('cmd');
     if (cmd) {
-      setCommand(decodeURIComponent(cmd));
+      setCommand(cmd);
       router.replace('/');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams, router]);
 
   const handlePlanCreated = (planId: string) => {
     setActivePlanId(planId);

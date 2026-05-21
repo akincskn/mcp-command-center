@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import {
   CommandDialog,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -39,6 +38,12 @@ const EXAMPLE_COMMANDS = [
     command: 'Recall previous comparison about mcp-command-center, diff with current GitHub state',
     icon: Database,
   },
+];
+
+const NAV_ITEMS = [
+  { label: 'New Command', href: '/', icon: Sparkles },
+  { label: 'History', href: '/history', icon: History },
+  { label: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export function CommandPalette() {
@@ -87,23 +92,43 @@ export function CommandPalette() {
 
   const showResources = inputValue.includes('@');
 
+  // Manual filtering for normal mode (cmdk filter disabled via shouldFilter={false})
+  const query = showResources ? '' : inputValue.toLowerCase();
+  const visibleExamples = query
+    ? EXAMPLE_COMMANDS.filter(
+        (ex) =>
+          ex.label.toLowerCase().includes(query) ||
+          ex.command.toLowerCase().includes(query)
+      )
+    : EXAMPLE_COMMANDS;
+  const visibleNavItems = query
+    ? NAV_ITEMS.filter((item) => item.label.toLowerCase().includes(query))
+    : NAV_ITEMS;
+  const hasNoResults = !showResources && query && visibleExamples.length === 0 && visibleNavItems.length === 0;
+
   return (
-    <CommandDialog open={open} onOpenChange={handleOpenChange}>
+    // shouldFilter={false}: cmdk's built-in filter is disabled so "@" doesn't hide resource items.
+    // We do our own substring filtering for the normal (non-@) mode.
+    <CommandDialog open={open} onOpenChange={handleOpenChange} shouldFilter={false}>
       <CommandInput
         placeholder="Type a command or search... (@ for resources)"
         value={inputValue}
         onValueChange={setInputValue}
       />
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+        {hasNoResults && (
+          <p className="py-6 text-center text-sm text-muted-foreground">No results found.</p>
+        )}
 
         {showResources ? (
           <CommandGroup heading="Resources">
             {resources.length === 0 ? (
-              <CommandItem disabled>Fetching resources…</CommandItem>
+              <CommandItem disabled value="loading">
+                Fetching resources…
+              </CommandItem>
             ) : (
               resources.map((r) => (
-                <CommandItem key={r.uri} onSelect={() => runExample(`@${r.name}`)}>
+                <CommandItem key={r.uri} value={r.uri} onSelect={() => runExample(`@${r.name}`)}>
                   {r.mcpServer === 'github' ? (
                     <GitBranch className="mr-2 h-4 w-4" />
                   ) : (
@@ -117,36 +142,44 @@ export function CommandPalette() {
           </CommandGroup>
         ) : (
           <>
-            <CommandGroup heading="Example Commands">
-              {EXAMPLE_COMMANDS.map((ex) => (
-                <CommandItem key={ex.label} onSelect={() => runExample(ex.command)}>
-                  <ex.icon className="mr-2 h-4 w-4" />
-                  <span>{ex.label}</span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            {visibleExamples.length > 0 && (
+              <CommandGroup heading="Example Commands">
+                {visibleExamples.map((ex) => (
+                  <CommandItem
+                    key={ex.label}
+                    value={ex.label}
+                    onSelect={() => runExample(ex.command)}
+                  >
+                    <ex.icon className="mr-2 h-4 w-4" />
+                    <span>{ex.label}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
 
-            <CommandSeparator />
-
-            <CommandGroup heading="Navigation">
-              <CommandItem onSelect={() => runCommand(() => router.push('/'))}>
-                <Sparkles className="mr-2 h-4 w-4" />
-                <span>New Command</span>
-              </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => router.push('/history'))}>
-                <History className="mr-2 h-4 w-4" />
-                <span>History</span>
-              </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => router.push('/settings'))}>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </CommandItem>
-            </CommandGroup>
+            {visibleNavItems.length > 0 && (
+              <>
+                {visibleExamples.length > 0 && <CommandSeparator />}
+                <CommandGroup heading="Navigation">
+                  {visibleNavItems.map((item) => (
+                    <CommandItem
+                      key={item.href}
+                      value={item.label}
+                      onSelect={() => runCommand(() => router.push(item.href))}
+                    >
+                      <item.icon className="mr-2 h-4 w-4" />
+                      <span>{item.label}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </>
+            )}
 
             <CommandSeparator />
 
             <CommandGroup heading="Preferences">
               <CommandItem
+                value="toggle-theme"
                 onSelect={() => runCommand(() => setTheme(theme === 'dark' ? 'light' : 'dark'))}
               >
                 {theme === 'dark' ? (
