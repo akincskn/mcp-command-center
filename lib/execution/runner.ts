@@ -80,21 +80,9 @@ export async function runStep(stepId: string): Promise<void> {
 
     const duration = Date.now() - startedAt;
 
-    await db.step.update({
-      where: { id: stepId },
-      data: {
-        status: 'COMPLETED',
-        completedAt: new Date(),
-        duration,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        output: output as any,
-        inputTokens,
-        outputTokens,
-      },
-    });
-
+    let stepCostUsd = 0;
     if (step.type === 'LLM_STEP' && provider && modelName) {
-      await logUsage({
+      stepCostUsd = await logUsage({
         userId: step.plan.user.id,
         planId: step.planId,
         provider,
@@ -106,6 +94,41 @@ export async function runStep(stepId: string): Promise<void> {
         success: true,
       });
     }
+
+    await db.step.update({
+      where: { id: stepId },
+      data: {
+        status: 'COMPLETED',
+        completedAt: new Date(),
+        duration,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        output: output as any,
+        inputTokens,
+        outputTokens,
+        costUsd: stepCostUsd,
+      },
+    });
+
+    // Aggregate plan-level totals from all completed steps
+    const completedSteps = await db.step.findMany({
+      where: { planId: step.planId, status: 'COMPLETED' },
+      select: { inputTokens: true, outputTokens: true, costUsd: true },
+    });
+
+    const totalTokens = completedSteps.reduce(
+      (sum, s) => sum + (s.inputTokens ?? 0) + (s.outputTokens ?? 0),
+      0
+    );
+
+    const totalCostUsd = completedSteps.reduce(
+      (sum, s) => sum + Number(s.costUsd ?? 0),
+      0
+    );
+
+    await db.plan.update({
+      where: { id: step.planId },
+      data: { totalTokens, totalCostUsd },
+    });
 
     // Find and trigger next step
     const allSteps = step.plan.steps;
