@@ -18,7 +18,18 @@ export const githubGetRepo: MCPTool = {
 
     const { owner, repo } = input as { owner: string; repo: string };
 
-    const { data } = await octokit.repos.get({ owner, repo });
+    let data: Awaited<ReturnType<typeof octokit.repos.get>>['data'];
+    try {
+      ({ data } = await octokit.repos.get({ owner, repo }));
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'status' in err && err.status === 404) {
+        throw new Error(
+          `Repository "${owner}/${repo}" not found or not accessible. ` +
+          `It may be private, renamed, or the name was inferred incorrectly.`
+        );
+      }
+      throw err;
+    }
 
     return {
       content: [

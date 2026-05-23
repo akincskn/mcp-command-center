@@ -50,65 +50,57 @@ CRITICAL:
 - If command requires a tool not in list, return error: "unsupported"
 - Do not invent tools that don't exist
 - Memory recalls should use specific keys if mentioned, otherwise tag-based
+- memory.store MUST always include a "value" field. Use { "_dynamic": "step_N.output.text" } to reference a previous LLM_STEP output, or { "_dynamic": "step_N.output" } for a TOOL_CALL output
+- Do NOT use placeholder strings like {date}, {timestamp}, or {id} in memory keys. Use static, descriptive keys (e.g. "rivalradar-comparison", "mcp-analysis")
+
+IMPORTANT — Tool chaining limitation:
+Do NOT create plans where a github tool (list_issues, get_repo, get_file_content) depends on a repository name produced by a previous LLM_STEP. The owner/repo parameters must be EXPLICIT in the user's command or come from a known fixed source. If the user asks to analyze repositories found via web search, use the LLM_STEP to SUMMARIZE the search results directly — do not attempt to fetch those repos' issues via github tools, as the repository names cannot be reliably resolved.
+
+Good: tavily.web_search → LLM_STEP summarizes the found projects from search results.
+Bad: tavily.web_search → LLM_STEP picks repos → github.list_issues on those repos.
 
 LANGUAGE: Respond in the same language as the user's original command. If user wrote Turkish, respond Turkish. Description and title fields should match the user's language.
 
 FEW-SHOT EXAMPLES:
 
 Example 1 — Developer Workflow:
-USER: "akincskn/rivalradar son 5 issue'sunu listele, web'de benzer açık-kaynak projeleri ara, karşılaştırma yap"
+USER: "akincskn/mcp-command-center son 5 issue'sunu listele, web'de benzer AI orchestration araçlarını ara, karşılaştırma yap"
 OUTPUT:
 {
-  "description": "Fetch issues from rivalradar, find similar projects via web search, compare findings",
-  "estimatedDuration": 25,
+  "description": "Fetch issues from mcp-command-center, search for similar AI orchestration tools, summarize comparison",
+  "estimatedDuration": 20,
   "steps": [
     {
       "order": 1,
-      "title": "Fetch RivalRadar issues",
-      "description": "Get the latest 5 open issues from akincskn/rivalradar",
+      "title": "Fetch mcp-command-center issues",
+      "description": "Get the latest 5 open issues from akincskn/mcp-command-center",
       "type": "TOOL_CALL",
       "toolName": "github.list_issues",
-      "toolInput": { "owner": "akincskn", "repo": "rivalradar", "state": "open", "perPage": 5 }
+      "toolInput": { "owner": "akincskn", "repo": "mcp-command-center", "state": "open", "perPage": 5 }
     },
     {
       "order": 2,
-      "title": "Search for similar projects",
-      "description": "Find open-source AI competitor analysis tools",
+      "title": "Search for similar tools",
+      "description": "Find AI orchestration and MCP tools via web search",
       "type": "TOOL_CALL",
       "toolName": "tavily.web_search",
-      "toolInput": { "query": "open source AI competitor analysis tool github", "count": 10 }
+      "toolInput": { "query": "AI orchestration tools Model Context Protocol open source", "count": 8 }
     },
     {
       "order": 3,
-      "title": "Identify top 3 similar repos",
-      "description": "Filter search results to extract 3 most relevant GitHub repos",
+      "title": "Comparison synthesis",
+      "description": "Summarize how the found tools compare to mcp-command-center based on search results and issues",
       "type": "LLM_STEP",
-      "agentTier": "balanced",
-      "promptHint": "Extract 3 GitHub repos most similar to a competitor analysis tool"
+      "agentTier": "quality",
+      "promptHint": "Compare the project's open issues with the landscape of similar AI orchestration tools found via web search. Summarize key differentiators and gaps."
     },
     {
       "order": 4,
-      "title": "Fetch issues from similar repos",
-      "description": "Get issues from each of the 3 identified repos",
-      "type": "TOOL_CALL",
-      "toolName": "github.list_issues",
-      "toolInput": { "_dynamic": "from_step_3" }
-    },
-    {
-      "order": 5,
-      "title": "Comparison synthesis",
-      "description": "Compare RivalRadar issues with similar projects",
-      "type": "LLM_STEP",
-      "agentTier": "quality",
-      "promptHint": "Compare feature gaps and issue patterns"
-    },
-    {
-      "order": 6,
       "title": "Save comparison to memory",
       "description": "Store the comparison for future reference",
       "type": "TOOL_CALL",
       "toolName": "memory.store",
-      "toolInput": { "key": "rivalradar-comparison-{date}", "tags": ["comparison", "github", "rivalradar"] }
+      "toolInput": { "key": "mcp-command-center-comparison", "value": { "_dynamic": "step_3.output.text" }, "tags": ["comparison", "github", "mcp"] }
     }
   ]
 }
@@ -150,7 +142,7 @@ OUTPUT:
       "description": "Store updated comparison",
       "type": "TOOL_CALL",
       "toolName": "memory.store",
-      "toolInput": { "key": "rivalradar-comparison-update-{date}", "tags": ["comparison", "github", "rivalradar", "update"] }
+      "toolInput": { "key": "rivalradar-comparison-update", "value": { "_dynamic": "step_3.output.text" }, "tags": ["comparison", "github", "rivalradar", "update"] }
     }
   ]
 }`;

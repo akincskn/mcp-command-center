@@ -25,12 +25,23 @@ export const githubGetFile: MCPTool = {
       ref?: string;
     };
 
-    const { data } = await octokit.repos.getContent({
-      owner,
-      repo,
-      path,
-      ...(ref ? { ref } : {}),
-    });
+    let data: Awaited<ReturnType<typeof octokit.repos.getContent>>['data'];
+    try {
+      ({ data } = await octokit.repos.getContent({
+        owner,
+        repo,
+        path,
+        ...(ref ? { ref } : {}),
+      }));
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'status' in err && err.status === 404) {
+        throw new Error(
+          `Repository "${owner}/${repo}" not found or not accessible. ` +
+          `It may be private, renamed, or the name was inferred incorrectly.`
+        );
+      }
+      throw err;
+    }
 
     if (Array.isArray(data)) {
       return {

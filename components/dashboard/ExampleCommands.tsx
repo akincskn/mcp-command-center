@@ -11,24 +11,24 @@ const SCENARIOS = [
     title: 'Developer Workflow',
     icon: GitBranch,
     command:
-      'List recent issues from akincskn/mcp-command-center, search for similar projects on web, compare findings',
-    tools: ['GitHub', 'Tavily', 'Memory'],
+      'List recent issues from akincskn/mcp-command-center, search the web for similar AI orchestration tools, and summarize how they compare',
+    tools: ['GitHub', 'Tavily', 'LLM'],
   },
   {
     id: 'B',
     title: 'Research Workflow',
     icon: Search,
     command:
-      'Find 5 articles about MCP protocol, extract key insights, save to knowledge base',
-    tools: ['Tavily', 'Memory'],
+      'Search the web for articles about Model Context Protocol, extract the key insights, and save them to memory',
+    tools: ['Tavily', 'LLM', 'Memory'],
   },
   {
     id: 'C',
     title: 'Knowledge Workflow',
     icon: Brain,
     command:
-      'Recall previous comparison about mcp-command-center, diff with current GitHub state',
-    tools: ['Memory', 'GitHub'],
+      'Recall my previous analysis about mcp-command-center, then fetch the latest repo metadata to see what changed',
+    tools: ['Memory', 'GitHub', 'LLM'],
   },
 ] as const;
 
@@ -36,6 +36,7 @@ const TOOL_COLORS: Record<string, string> = {
   GitHub: 'bg-primary/10 text-primary border-primary/20',
   Tavily: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
   Memory: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+  LLM: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
 };
 
 interface ExampleCommandsProps {

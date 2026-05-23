@@ -25,12 +25,23 @@ export const githubListIssues: MCPTool = {
       perPage?: number;
     };
 
-    const { data } = await octokit.issues.listForRepo({
-      owner,
-      repo,
-      state,
-      per_page: Math.min(Number(perPage), 20),
-    });
+    let data: Awaited<ReturnType<typeof octokit.issues.listForRepo>>['data'];
+    try {
+      ({ data } = await octokit.issues.listForRepo({
+        owner,
+        repo,
+        state,
+        per_page: Math.min(Number(perPage), 20),
+      }));
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'status' in err && err.status === 404) {
+        throw new Error(
+          `Repository "${owner}/${repo}" not found or not accessible. ` +
+          `It may be private, renamed, or the name was inferred incorrectly.`
+        );
+      }
+      throw err;
+    }
 
     // Filter out pull requests (GitHub API returns both)
     const issues = data

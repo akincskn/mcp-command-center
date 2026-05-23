@@ -25,17 +25,19 @@ const EXAMPLE_COMMANDS = [
   {
     label: 'Developer Workflow',
     command:
-      'List recent issues from akincskn/mcp-command-center, search for similar projects on web, compare findings',
+      'List recent issues from akincskn/mcp-command-center, search the web for similar AI orchestration tools, and summarize how they compare',
     icon: GitBranch,
   },
   {
     label: 'Research Workflow',
-    command: 'Find 5 articles about MCP protocol, extract key insights, save to knowledge base',
+    command:
+      'Search the web for articles about Model Context Protocol, extract the key insights, and save them to memory',
     icon: Search,
   },
   {
     label: 'Knowledge Workflow',
-    command: 'Recall previous comparison about mcp-command-center, diff with current GitHub state',
+    command:
+      'Recall my previous analysis about mcp-command-center, then fetch the latest repo metadata to see what changed',
     icon: Database,
   },
 ];
