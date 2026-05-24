@@ -204,8 +204,9 @@ export function PlanView({ planId, onCleared }: PlanViewProps) {
           <div className="flex items-center gap-0.5 rounded-md border border-border p-0.5 shrink-0">
             <button
               onClick={() => setViewMode('list')}
+              aria-pressed={viewMode === 'list'}
               className={cn(
-                'flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors',
+                'flex min-h-[36px] items-center gap-1 rounded px-3 py-2 text-xs transition-colors',
                 viewMode === 'list'
                   ? 'bg-muted text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -216,8 +217,9 @@ export function PlanView({ planId, onCleared }: PlanViewProps) {
             </button>
             <button
               onClick={() => setViewMode('graph')}
+              aria-pressed={viewMode === 'graph'}
               className={cn(
-                'flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors',
+                'flex min-h-[36px] items-center gap-1 rounded px-3 py-2 text-xs transition-colors',
                 viewMode === 'graph'
                   ? 'bg-muted text-foreground'
                   : 'text-muted-foreground hover:text-foreground'

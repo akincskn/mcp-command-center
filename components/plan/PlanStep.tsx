@@ -181,7 +181,7 @@ export function PlanStep({ step, index }: PlanStepProps) {
               {step.errorMessage.length > 120 && (
                 <button
                   onClick={() => setErrorExpanded((v) => !v)}
-                  className="text-[10px] text-muted-foreground/60 hover:text-muted-foreground underline"
+                  className="flex min-h-[44px] items-center text-[10px] text-muted-foreground/60 hover:text-muted-foreground underline"
                 >
                   {errorExpanded ? 'Show less' : 'Show more'}
                 </button>
@@ -196,7 +196,7 @@ export function PlanStep({ step, index }: PlanStepProps) {
               variant="outline"
               onClick={() => retryMutation.mutate(step.id)}
               disabled={retryMutation.isPending}
-              className="h-7 text-xs border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+              className="h-11 min-w-[44px] text-xs border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300"
             >
               {retryMutation.isPending ? 'Retrying...' : 'Retry from here'}
             </Button>

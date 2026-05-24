@@ -76,6 +76,42 @@
   }
 }
 
+/* ─── Semantic status tokens ─── */
+:root {
+  --success: 160 64% 41%;
+  --success-foreground: 0 0% 98%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 240 5.9% 10%;
+  --error: 0 84.2% 60.2%;
+  --error-foreground: 0 0% 98%;
+}
+
+.dark {
+  --success: 160 64% 52%;
+  --success-foreground: 240 5.9% 10%;
+  --warning: 38 92% 55%;
+  --warning-foreground: 240 5.9% 10%;
+  --error: 0 62.8% 50%;
+  --error-foreground: 0 0% 98%;
+}
+
+/* ─── Chart tokens (Recharts v3) ─── */
+:root {
+  --chart-1: 160 84% 39%;
+  --chart-2: 217 91% 60%;
+  --chart-3: 38 92% 50%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 0 84% 60%;
+}
+
+.dark {
+  --chart-1: 160 84% 52%;
+  --chart-2: 217 91% 65%;
+  --chart-3: 38 92% 55%;
+  --chart-4: 280 65% 65%;
+  --chart-5: 0 84% 65%;
+}
+
 /* ─── React Flow graph ─── */
 :root {
   --edge-default: hsl(240 4% 30%);

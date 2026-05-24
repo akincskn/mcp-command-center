@@ -17,7 +17,7 @@ export function PlanGraph({ steps }: PlanGraphProps) {
   const { nodes, edges } = useMemo(() => buildGraphFromSteps(steps), [steps]);
 
   return (
-    <div className="h-[320px] w-full rounded-lg border border-border bg-zinc-950/40 md:h-[500px]">
+    <div className="h-[320px] w-full rounded-lg border border-border bg-card/40 md:h-[500px]">
       <ReactFlow
         nodes={nodes}
         edges={edges}

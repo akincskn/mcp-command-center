@@ -22,8 +22,9 @@ export function NavLinks() {
           <Link
             key={href}
             href={href}
+            aria-current={isActive ? 'page' : undefined}
             className={cn(
-              'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
+              'flex min-h-[44px] items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
               isActive
                 ? 'bg-accent text-accent-foreground font-medium'
                 : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
