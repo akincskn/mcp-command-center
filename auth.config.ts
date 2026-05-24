@@ -23,10 +23,12 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard =
-        nextUrl.pathname.startsWith('/dashboard') ||
-        nextUrl.pathname === '/';
-      if (isOnDashboard) {
+      const { pathname } = nextUrl;
+      const isProtected =
+        pathname.startsWith('/dashboard') ||
+        pathname.startsWith('/history') ||
+        pathname.startsWith('/settings');
+      if (isProtected) {
         if (isLoggedIn) return true;
         return false;
       }

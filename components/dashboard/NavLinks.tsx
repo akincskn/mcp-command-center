@@ -6,7 +6,7 @@ import { LayoutDashboard, History, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const links = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/history', label: 'History', icon: History },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];

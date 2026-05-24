@@ -43,7 +43,7 @@ const EXAMPLE_COMMANDS = [
 ];
 
 const NAV_ITEMS = [
-  { label: 'New Command', href: '/', icon: Sparkles },
+  { label: 'New Command', href: '/dashboard', icon: Sparkles },
   { label: 'History', href: '/history', icon: History },
   { label: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -90,7 +90,7 @@ export function CommandPalette() {
   }, []);
 
   const runExample = (command: string) =>
-    runCommand(() => router.push(`/?cmd=${encodeURIComponent(command)}`));
+    runCommand(() => router.push(`/dashboard?cmd=${encodeURIComponent(command)}`));
 
   const showResources = inputValue.includes('@');
 

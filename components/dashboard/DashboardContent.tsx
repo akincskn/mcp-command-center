@@ -32,11 +32,15 @@ export function DashboardContent({ firstName }: DashboardContentProps) {
 
   useEffect(() => {
     const cmd = searchParams.get('cmd');
+    const planId = searchParams.get('planId');
     if (cmd) {
       setCommand(cmd);
-      router.replace('/');
+      router.replace('/dashboard');
+    } else if (planId) {
+      setActivePlanId(planId);
+      router.replace('/dashboard');
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, setActivePlanId]);
 
   const handlePlanCreated = (planId: string) => {
     setActivePlanId(planId);
