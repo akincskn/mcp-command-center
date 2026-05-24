@@ -45,10 +45,15 @@ interface ExampleCommandsProps {
 
 export function ExampleCommands({ onCommandSelect }: ExampleCommandsProps) {
   return (
-    <div className="space-y-3">
-      <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-        Example Commands
-      </h2>
+    <div className="space-y-4">
+      <div className="space-y-1">
+        <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+          Try an Example
+        </h2>
+        <p className="text-xs text-muted-foreground/70">
+          Describe what you want in plain language. The AI builds a step-by-step plan you review before anything runs.
+        </p>
+      </div>
       <div className="grid gap-3">
         {SCENARIOS.map((s, i) => (
           <motion.button

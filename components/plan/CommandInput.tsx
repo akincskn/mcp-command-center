@@ -68,7 +68,7 @@ export function CommandInput({
           value={command}
           onChange={(e) => onCommandChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="What do you want to do today?"
+          placeholder="e.g. List recent issues from my repo and compare with similar tools"
           disabled={createPlan.isPending}
           className="h-14 pr-12 text-base bg-card/60 border-border/60 focus-visible:border-emerald-500/50 focus-visible:ring-emerald-500/20 sm:pr-44"
         />
