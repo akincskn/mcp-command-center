@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Menu, Terminal } from 'lucide-react';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { NavLinks } from './NavLinks';
@@ -34,8 +34,11 @@ export function MobileSidebar({ user }: MobileSidebarProps) {
       <SheetContent
         side="left"
         className="flex w-60 flex-col p-0 bg-card"
-        aria-label="Navigation menu"
       >
+        <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+        <SheetDescription className="sr-only">
+          Main navigation links for the dashboard
+        </SheetDescription>
         {/* Logo */}
         <div className="flex h-14 items-center gap-2.5 px-6">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 ring-1 ring-primary/20">
