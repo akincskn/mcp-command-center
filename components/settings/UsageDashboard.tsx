@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Area,
@@ -77,6 +78,9 @@ const modelChartConfig: ChartConfig = {
 };
 
 export function UsageDashboard() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const { data, isLoading, isError } = useQuery<UsageSummary>({
     queryKey: ['usage-summary'],
     queryFn: () => fetch('/api/usage/summary').then((r) => r.json()),
@@ -147,7 +151,7 @@ export function UsageDashboard() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {hasDailyData ? (
+          {mounted && hasDailyData ? (
             <ChartContainer config={dailyChartConfig} className="min-h-[200px] w-full">
               <AreaChart data={dailyData} margin={{ left: 8, right: 8, top: 4 }}>
                 <defs>
@@ -206,7 +210,7 @@ export function UsageDashboard() {
       </Card>
 
       {/* Cost by model */}
-      {hasModelData && (
+      {mounted && hasModelData && (
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium">Cost by Model</CardTitle>
