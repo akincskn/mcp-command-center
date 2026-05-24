@@ -70,7 +70,7 @@ export function CommandInput({
           onKeyDown={handleKeyDown}
           placeholder="What do you want to do today?"
           disabled={createPlan.isPending}
-          className="h-14 pr-44 text-base bg-card/60 border-border/60 focus-visible:border-emerald-500/50 focus-visible:ring-emerald-500/20"
+          className="h-14 pr-12 text-base bg-card/60 border-border/60 focus-visible:border-emerald-500/50 focus-visible:ring-emerald-500/20 sm:pr-44"
         />
         <Button
           onClick={handleSubmit}
@@ -80,13 +80,13 @@ export function CommandInput({
         >
           {createPlan.isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Planning
+              <Loader2 className="h-4 w-4 animate-spin sm:mr-2" />
+              <span className="hidden sm:inline">Planning</span>
             </>
           ) : (
             <>
-              Generate Plan
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <span className="hidden sm:inline">Generate Plan</span>
+              <ArrowRight className="h-4 w-4 sm:ml-2" />
             </>
           )}
         </Button>
