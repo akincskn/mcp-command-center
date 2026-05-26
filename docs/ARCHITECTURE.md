@@ -203,7 +203,7 @@ export async function POST(req, { params }) {
 }
 ```
 
-**Backup plan:** Vercel Cron her 30sn'de pending step'leri pickup eder (eğer fetch chain kırıldıysa).
+**Backup plan:** Self-invoking fetch chain primary. Cron disabled on Vercel Hobby (daily limit). Endpoint `app/api/cron/process-pending` preserved for Pro upgrade or manual trigger. Faz 2: consider QStash or external cron for free recurring jobs.
 
 ## 5. State Machine
 
