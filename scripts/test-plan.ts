@@ -17,7 +17,7 @@ async function test() {
 
     const start = Date.now();
     try {
-      const result = await generatePlan({ command });
+      const result = await generatePlan({ command, userId: 'test-script' });
       const duration = Date.now() - start;
 
       console.log('\nPlan generated in', duration, 'ms');

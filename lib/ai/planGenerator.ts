@@ -5,11 +5,12 @@ import {
   PLAN_GENERATION_SYSTEM_PROMPT,
   buildPlanUserPrompt,
 } from '@/lib/prompts/planGeneration';
+import { db } from '@/lib/db';
 
 export interface PlanGenerationInput {
   command: string;
-  githubUsername?: string;
-  recentMemories?: Array<{ key: string; tags: string[] }>;
+  userId: string;
+  agentMode?: 'auto' | 'speed' | 'balanced' | 'quality';
 }
 
 export interface PlanGenerationResult {
@@ -27,6 +28,14 @@ export async function generatePlan(
   retries = 2,
   lastError?: string
 ): Promise<PlanGenerationResult> {
+  // Fetch recent 5 memories for user context
+  const recentMemories = await db.memory.findMany({
+    where: { userId: input.userId },
+    orderBy: { createdAt: 'desc' },
+    take: 5,
+    select: { key: true, tags: true },
+  });
+
   // PROMPTS.md Section 5: On retry 2, inject the previous error into system prompt
   const systemPrompt =
     lastError && retries < 2
@@ -41,7 +50,7 @@ export async function generatePlan(
       // Groq json_schema strict mode rejects .optional() fields and propertyNames.
       providerOptions: { groq: { structuredOutputs: false } },
       system: systemPrompt,
-      prompt: buildPlanUserPrompt(input),
+      prompt: buildPlanUserPrompt({ command: input.command, recentMemories }),
       temperature: 0.3,
     });
 

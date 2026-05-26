@@ -28,6 +28,9 @@ export interface PlanStep {
   status: StepStatus;
   inputTokens: number;
   outputTokens: number;
+  costUsd: string;
+  duration: number | null;
+  retryCount: number;
   startedAt: string | null;
   completedAt: string | null;
   errorMessage: string | null;
@@ -41,6 +44,13 @@ export interface PlanWithSteps {
   status: PlanStatus;
   agentMode: string;
   estimatedDuration: number | null;
+  actualDuration: number | null;
+  totalTokens: number;
+  totalCostUsd: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  failedAt: string | null;
+  errorMessage: string | null;
   steps: PlanStep[];
   createdAt: string;
   updatedAt: string;
@@ -125,6 +135,25 @@ export function useExecutePlan() {
   return useMutation({
     mutationFn: executePlanFn,
     onSuccess: (_data, planId) => {
+      qc.invalidateQueries({ queryKey: ['plan', planId] });
+    },
+  });
+}
+
+async function retryStepFn(stepId: string): Promise<{ status: string }> {
+  const res = await fetch(`/api/step/${stepId}/retry`, { method: 'POST' });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({})) as { error?: string };
+    throw new Error(err.error ?? 'Retry failed');
+  }
+  return res.json();
+}
+
+export function useRetryStep(planId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: retryStepFn,
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['plan', planId] });
     },
   });

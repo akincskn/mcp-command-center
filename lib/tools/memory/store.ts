@@ -23,6 +23,16 @@ export const memoryStore: MCPTool = {
       namespace?: string;
     };
 
+    if (!key) throw new Error('memory.store requires a key');
+
+    // Prisma JSON fields reject undefined; wrap plain strings too
+    const safeValue: unknown =
+      value === undefined || value === null
+        ? { note: 'No content provided' }
+        : typeof value === 'string'
+          ? { text: value }
+          : value;
+
     const memory = await db.memory.upsert({
       where: {
         userId_namespace_key: {
@@ -32,14 +42,14 @@ export const memoryStore: MCPTool = {
         },
       },
       update: {
-        value: value as Parameters<typeof db.memory.upsert>[0]['update']['value'],
+        value: safeValue as Parameters<typeof db.memory.upsert>[0]['update']['value'],
         tags,
       },
       create: {
         userId: ctx.userId,
         namespace,
         key,
-        value: value as Parameters<typeof db.memory.upsert>[0]['create']['value'],
+        value: safeValue as Parameters<typeof db.memory.upsert>[0]['create']['value'],
         tags,
       },
       select: {

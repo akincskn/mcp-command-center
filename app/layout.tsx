@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import { ThemeProvider } from '@/components/shared/ThemeProvider';
+import { QueryProvider } from '@/components/shared/QueryProvider';
 import { Toaster } from '@/components/shared/Toaster';
 
 export const metadata: Metadata = {
@@ -23,8 +24,10 @@ export default function RootLayout({
     >
       <body className="antialiased">
         <ThemeProvider>
-          {children}
-          <Toaster />
+          <QueryProvider>
+            {children}
+            <Toaster />
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
