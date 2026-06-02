@@ -17,8 +17,11 @@ import {
   Loader2,
   CheckCircle,
   XCircle,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { useRetryStep } from './usePlanQueries';
+import { StepOutput } from './StepOutput';
 import type { PlanStep as PlanStepType } from './usePlanQueries';
 
 const TOOL_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -62,6 +65,7 @@ interface PlanStepProps {
 
 export function PlanStep({ step, index }: PlanStepProps) {
   const [errorExpanded, setErrorExpanded] = useState(false);
+  const [outputExpanded, setOutputExpanded] = useState(false);
   const retryMutation = useRetryStep(step.planId);
 
   const ToolIcon =
@@ -200,6 +204,34 @@ export function PlanStep({ step, index }: PlanStepProps) {
             >
               {retryMutation.isPending ? 'Retrying...' : 'Retry from here'}
             </Button>
+          )}
+
+          {/* Output expand */}
+          {step.status === 'COMPLETED' && !!step.output && (
+            <div className="mt-2 pt-2 border-t border-border/40">
+              <button
+                onClick={() => setOutputExpanded((v) => !v)}
+                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors min-h-[44px]"
+              >
+                {outputExpanded ? (
+                  <ChevronUp className="h-3 w-3" />
+                ) : (
+                  <ChevronDown className="h-3 w-3" />
+                )}
+                {outputExpanded ? 'Hide output' : 'View output'}
+              </button>
+
+              {outputExpanded && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.15 }}
+                  className="mt-2 overflow-hidden"
+                >
+                  <StepOutput step={step} />
+                </motion.div>
+              )}
+            </div>
           )}
         </div>
       </div>

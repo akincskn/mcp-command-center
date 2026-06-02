@@ -6,13 +6,14 @@ import { springSoft, easeOut, easeOutFast } from '@/lib/motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Clock, Hash, Zap, List, GitFork } from 'lucide-react';
+import { Clock, Hash, Zap, List, GitFork, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { usePlan, useCancelPlan, useExecutePlan } from './usePlanQueries';
 import { PlanStep } from './PlanStep';
 import { useExecutionStream } from './useExecutionStream';
 import { PlanGraph } from './graph/PlanGraph';
+import { StepOutput } from './StepOutput';
 
 interface PlanViewProps {
   planId: string;
@@ -241,6 +242,28 @@ export function PlanView({ planId, onCleared }: PlanViewProps) {
           &ldquo;{plan.command}&rdquo;
         </p>
       </div>
+
+      {/* Result summary card — last LLM step output when plan is COMPLETED */}
+      {isCompleted && (() => {
+        const lastLLMStep = [...plan.steps].reverse().find(
+          (s) => s.type === 'LLM_STEP' && s.output
+        );
+        if (!lastLLMStep) return null;
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={easeOutFast}
+            className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="h-4 w-4 text-emerald-400" />
+              <h4 className="text-sm font-semibold">Result</h4>
+            </div>
+            <StepOutput step={lastLLMStep} />
+          </motion.div>
+        );
+      })()}
 
       {/* Steps */}
       {viewMode === 'list' ? (

@@ -63,6 +63,7 @@ export async function GET(
                 outputTokens: true,
                 costUsd: true,
                 errorMessage: true,
+                output: true,
               },
             },
           },
