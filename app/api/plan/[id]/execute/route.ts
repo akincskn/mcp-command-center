@@ -40,7 +40,7 @@ export async function POST(
 
   const firstStep = plan.steps[0];
   if (firstStep) {
-    void triggerStep(firstStep.id);
+    triggerStep(firstStep.id);
   } else {
     await db.plan.update({
       where: { id: planId },

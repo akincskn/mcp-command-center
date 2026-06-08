@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 
     const allPrevCompleted = previousSteps.every(s => s.status === 'COMPLETED');
     if (allPrevCompleted) {
-      void triggerStep(step.id);
+      triggerStep(step.id);
       triggered++;
     }
   }

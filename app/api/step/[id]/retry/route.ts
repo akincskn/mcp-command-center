@@ -61,7 +61,7 @@ export async function POST(
     }),
   ]);
 
-  void triggerStep(stepId);
+  triggerStep(stepId);
 
   return NextResponse.json({ status: 'EXECUTING' });
 }

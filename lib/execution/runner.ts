@@ -136,7 +136,7 @@ export async function runStep(stepId: string): Promise<void> {
     const nextStep = allSteps[currentIdx + 1];
 
     if (nextStep && nextStep.status === 'PENDING') {
-      void triggerStep(nextStep.id);
+      triggerStep(nextStep.id);
     } else {
       const planStartedAt = step.plan.startedAt;
       await db.plan.update({
