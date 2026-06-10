@@ -1,13 +1,27 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { db } from '@/lib/db';
 import { triggerStep } from '@/lib/execution/triggerStep';
 
-const CRON_SECRET = process.env.CRON_SECRET!;
+const CRON_SECRET = process.env.CRON_SECRET;
+if (!CRON_SECRET) {
+  throw new Error('CRON_SECRET not configured');
+}
+
+function isAuthorized(req: Request): boolean {
+  const authHeader = req.headers.get('authorization') ?? '';
+  const expected = `Bearer ${CRON_SECRET}`;
+  const headerBuffer = Buffer.from(authHeader);
+  const expectedBuffer = Buffer.from(expected);
+  return (
+    headerBuffer.length === expectedBuffer.length &&
+    crypto.timingSafeEqual(headerBuffer, expectedBuffer)
+  );
+}
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${CRON_SECRET}`) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!isAuthorized(req)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   // Find PENDING steps in EXECUTING plans (stuck / missed triggers)

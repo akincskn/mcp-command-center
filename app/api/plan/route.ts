@@ -92,8 +92,10 @@ export async function POST(req: Request) {
       errorMessage,
     });
 
+    console.error('[plan.create]', error);
+
     return NextResponse.json(
-      { error: 'Plan generation failed', message: errorMessage },
+      { error: 'Failed to generate plan. Please try again.' },
       { status: 500 }
     );
   }

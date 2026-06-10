@@ -7,6 +7,11 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ name: string }> },
 ) {
+  // Dev-only tool runner — never expose the direct tool-execution surface in production.
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
