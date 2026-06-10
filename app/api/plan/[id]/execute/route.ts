@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { waitUntil } from '@vercel/functions';
 import { auth } from '@/auth';
 import { db } from '@/lib/db';
-import { triggerStep } from '@/lib/execution/triggerStep';
+import { runPlanSequential } from '@/lib/execution/runner';
+
+export const maxDuration = 60; // Hobby plan max; inline sequential run fits well within this
 
 export async function POST(
   req: Request,
@@ -40,7 +43,9 @@ export async function POST(
 
   const firstStep = plan.steps[0];
   if (firstStep) {
-    triggerStep(firstStep.id);
+    // Run the whole plan sequentially in this function's background lifetime.
+    // No self-fetch chain — avoids Vercel 508 INFINITE_LOOP at step depth 5+.
+    waitUntil(runPlanSequential(planId));
   } else {
     await db.plan.update({
       where: { id: planId },

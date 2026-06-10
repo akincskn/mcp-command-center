@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { waitUntil } from '@vercel/functions';
 import { auth } from '@/auth';
 import { db } from '@/lib/db';
-import { triggerStep } from '@/lib/execution/triggerStep';
+import { runPlanSequential } from '@/lib/execution/runner';
+
+export const maxDuration = 60; // matches execute route; retry replays remaining steps inline
 
 export async function POST(
   req: Request,
@@ -61,7 +64,8 @@ export async function POST(
     }),
   ]);
 
-  triggerStep(stepId);
+  // Replay this step and all subsequent PENDING steps inline (no self-fetch chain).
+  waitUntil(runPlanSequential(step.planId));
 
   return NextResponse.json({ status: 'EXECUTING' });
 }

@@ -5,7 +5,6 @@ import { buildLLMContext } from './contextBuilder';
 import { agents, agentMetadata } from '@/lib/ai/agents';
 import { generateText } from 'ai';
 import { logUsage } from '@/lib/usage';
-import { triggerStep } from './triggerStep';
 
 const EXTRACTION_PROMPT = `You are an extraction agent. Given raw tool output, extract specific information.
 
@@ -130,22 +129,16 @@ export async function runStep(stepId: string): Promise<void> {
       data: { totalTokens, totalCostUsd },
     });
 
-    // Find and trigger next step
-    const allSteps = step.plan.steps;
-    const currentIdx = allSteps.findIndex(s => s.id === step.id);
-    const nextStep = allSteps[currentIdx + 1];
-
     console.log(`[runner] step ${step.id} (order=${step.order}) completed`);
-    console.log(`[runner] allSteps count: ${allSteps.length}`);
-    console.log(`[runner] currentIdx: ${currentIdx}`);
-    console.log(`[runner] nextStep: ${nextStep?.id ?? 'NONE'} (order=${nextStep?.order ?? '-'}, status=${nextStep?.status ?? '-'})`);
 
-    if (nextStep && nextStep.status === 'PENDING') {
-      console.log(`[runner] triggering next step: ${nextStep.id}`);
-      triggerStep(nextStep.id);
-      console.log(`[runner] triggerStep called, returning`);
-    } else {
-      console.log(`[runner] no next step or not PENDING — marking plan COMPLETED`);
+    // Check if this was the last step → mark plan COMPLETED.
+    // No self-trigger — runPlanSequential drives the chain in-process.
+    const remainingPending = await db.step.count({
+      where: { planId: step.planId, status: 'PENDING' },
+    });
+
+    if (remainingPending === 0) {
+      console.log(`[runner] no PENDING steps remain — marking plan ${step.planId} COMPLETED`);
       const planStartedAt = step.plan.startedAt;
       await db.plan.update({
         where: { id: step.planId },
@@ -182,6 +175,50 @@ export async function runStep(stepId: string): Promise<void> {
     });
 
     console.error(`[runner] Step ${stepId} failed:`, error);
+  }
+}
+
+/**
+ * Execute all PENDING steps of a plan sequentially in a single function call.
+ * Replaces the self-invoking fetch chain (which hits Vercel 508 INFINITE_LOOP
+ * at depth 5+). The caller should wrap this in waitUntil() so it survives the
+ * HTTP response returning.
+ */
+export async function runPlanSequential(planId: string): Promise<void> {
+  console.log(`[runPlanSequential] starting plan ${planId}`);
+
+  while (true) {
+    // Find next PENDING step (ordered by `order`)
+    const nextStep = await db.step.findFirst({
+      where: { planId, status: 'PENDING' },
+      orderBy: { order: 'asc' },
+      select: { id: true, order: true },
+    });
+
+    if (!nextStep) {
+      console.log(`[runPlanSequential] no more PENDING steps for plan ${planId}`);
+      break;
+    }
+
+    console.log(`[runPlanSequential] executing step ${nextStep.order} (${nextStep.id})`);
+
+    try {
+      await runStep(nextStep.id);
+    } catch (err) {
+      // runStep already marks the plan FAILED in its own catch; break the chain.
+      console.error(`[runPlanSequential] step ${nextStep.id} failed, stopping chain:`, err);
+      break;
+    }
+
+    // If runStep marked the plan FAILED, stop.
+    const plan = await db.plan.findUnique({
+      where: { id: planId },
+      select: { status: true },
+    });
+    if (plan?.status === 'FAILED') {
+      console.log(`[runPlanSequential] plan ${planId} marked FAILED, stopping`);
+      break;
+    }
   }
 }
 

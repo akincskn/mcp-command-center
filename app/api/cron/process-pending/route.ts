@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { waitUntil } from '@vercel/functions';
 import { db } from '@/lib/db';
-import { triggerStep } from '@/lib/execution/triggerStep';
+import { runPlanSequential } from '@/lib/execution/runner';
+
+export const maxDuration = 60;
 
 const CRON_SECRET = process.env.CRON_SECRET;
 if (!CRON_SECRET) {
@@ -24,36 +27,26 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Find PENDING steps in EXECUTING plans (stuck / missed triggers)
+  // Find EXECUTING plans that still have PENDING steps (stuck / missed runs)
   const stuckSteps = await db.step.findMany({
     where: {
       status: 'PENDING',
       plan: { status: 'EXECUTING' },
     },
-    select: { id: true, planId: true, order: true },
+    select: { planId: true },
     take: 20,
   });
 
-  let triggered = 0;
-  for (const step of stuckSteps) {
-    const previousSteps = await db.step.findMany({
-      where: {
-        planId: step.planId,
-        order: { lt: step.order },
-      },
-      select: { status: true },
-    });
-
-    const allPrevCompleted = previousSteps.every(s => s.status === 'COMPLETED');
-    if (allPrevCompleted) {
-      triggerStep(step.id);
-      triggered++;
-    }
+  // Resume each affected plan once, inline (runPlanSequential picks up from the
+  // first PENDING step in order — no per-step self-trigger needed).
+  const planIds = Array.from(new Set(stuckSteps.map((s) => s.planId)));
+  for (const planId of planIds) {
+    waitUntil(runPlanSequential(planId));
   }
 
   return NextResponse.json({
     found: stuckSteps.length,
-    triggered,
+    triggered: planIds.length,
     timestamp: new Date().toISOString(),
   });
 }
