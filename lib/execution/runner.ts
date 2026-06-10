@@ -135,9 +135,17 @@ export async function runStep(stepId: string): Promise<void> {
     const currentIdx = allSteps.findIndex(s => s.id === step.id);
     const nextStep = allSteps[currentIdx + 1];
 
+    console.log(`[runner] step ${step.id} (order=${step.order}) completed`);
+    console.log(`[runner] allSteps count: ${allSteps.length}`);
+    console.log(`[runner] currentIdx: ${currentIdx}`);
+    console.log(`[runner] nextStep: ${nextStep?.id ?? 'NONE'} (order=${nextStep?.order ?? '-'}, status=${nextStep?.status ?? '-'})`);
+
     if (nextStep && nextStep.status === 'PENDING') {
+      console.log(`[runner] triggering next step: ${nextStep.id}`);
       triggerStep(nextStep.id);
+      console.log(`[runner] triggerStep called, returning`);
     } else {
+      console.log(`[runner] no next step or not PENDING — marking plan COMPLETED`);
       const planStartedAt = step.plan.startedAt;
       await db.plan.update({
         where: { id: step.planId },
