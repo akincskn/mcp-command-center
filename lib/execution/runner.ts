@@ -129,8 +129,6 @@ export async function runStep(stepId: string): Promise<void> {
       data: { totalTokens, totalCostUsd },
     });
 
-    console.log(`[runner] step ${step.id} (order=${step.order}) completed`);
-
     // Check if this was the last step → mark plan COMPLETED.
     // No self-trigger — runPlanSequential drives the chain in-process.
     const remainingPending = await db.step.count({
@@ -138,7 +136,6 @@ export async function runStep(stepId: string): Promise<void> {
     });
 
     if (remainingPending === 0) {
-      console.log(`[runner] no PENDING steps remain — marking plan ${step.planId} COMPLETED`);
       const planStartedAt = step.plan.startedAt;
       await db.plan.update({
         where: { id: step.planId },
